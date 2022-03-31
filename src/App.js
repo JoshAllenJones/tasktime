@@ -1,13 +1,23 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card  } from 'react-bootstrap';
+import React, {useState, useEffect} from 'react';
+import {Container, Row, Col, Card, Stack} from 'react-bootstrap';
 import SideNav from './SideNav/SideNav';
 import initialData from "./initial-data";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 
 //https://egghead.io/lessons/react-create-and-style-a-list-of-data-with-react
 
 
-
+const TaskCard = (props) => {
+    return(
+        <Card id={props.id}>
+            <Card.Body>
+                {props.content}
+            </Card.Body>
+        </Card>
+    )
+}
 
 
 const App = () => {
@@ -18,18 +28,23 @@ const App = () => {
 
     return (
         <Container>
-            <div>
-                {tasks.map((task) => (
-                    <Card id={task.id}>{task.content}</Card>
-                ))
-                }
-            </div>
+            <Row>
+
+                <Col xs={4}>
+
+                    <Stack>
+                        {tasks.map((task) => (
+                            <TaskCard id={task.id} content={task.content} />
+                        ))
+                        }
+
+                    </Stack>
+                </Col>
+            </Row>
         </Container>
 
 
-
-
-  )
+    )
 
 
 }
