@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
+//https://egghead.io/lessons/react-create-and-style-a-list-of-data-with-react
 
 //https://egghead.io/lessons/react-create-and-style-a-list-of-data-with-react
 
@@ -30,7 +30,7 @@ const App = () => {
         </div>
 
 
-  )
+    )
 
 
 }
