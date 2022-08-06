@@ -11,10 +11,10 @@ const App = () => {
 
     useEffect(() => {
       
-        fetch('/time').then(
+        fetch('/tasks/test').then(
             (response) => response.json()).then(
                 data => {
-                    setTimeVar(data.time)
+                    setTimeVar(data.task_list)
                 }
             )
 
