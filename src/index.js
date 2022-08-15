@@ -4,14 +4,14 @@ import {RecoilRoot} from 'recoil';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'antd/dist/antd.css'
 
 ReactDOM.render(
-    <RecoilRoot>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </RecoilRoot>,
+    <React.StrictMode>
+      <RecoilRoot>
+          <App />
+      </RecoilRoot>
+    </React.StrictMode>,
   document.getElementById('root')
 );
 

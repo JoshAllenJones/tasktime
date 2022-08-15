@@ -3,6 +3,8 @@
 
 api/venv/
 /.vscode
+.idea
+/.idea
 
 # dependencies
 /node_modules
