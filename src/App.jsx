@@ -11,8 +11,8 @@ import { projectListAtom } from "./atoms/projectListAtom";
 
 import ReactMarkdown from "react-markdown";
 
-import TaskCard from "./TaskCard/TaskCard";
-import TaskEntry from "./TaskEntry/TaskEntry";
+import TaskCard from "./components/TaskCard/TaskCard";
+import TaskEntry from "./components/TaskEntry/TaskEntry";
 import SubBlock from "./SubBlock/SubBlock";
 const { Header, Footer, Sider, Content } = Layout;
 

@@ -1,7 +1,8 @@
 import {Card, Col, Row, Button, Collapse, Table, Empty} from 'antd';
+import axios from 'axios';
 import {useState} from 'react'
 import { useRecoilState } from 'recoil';
-import { clockInAtom } from '../atoms/clockInAtom';
+import { clockInAtom } from '../../atoms/clockInAtom'
 const { Panel } = Collapse;
 
 
@@ -33,6 +34,13 @@ let TaskCard = (props) => {
     let TopBar = () => {
 
         const clockIn = () => {
+            let formData = new FormData()
+            formData.append('task_id', taskId)
+            axios.post('/task/clock-in', formData).then((response) => {
+                console.log(response)
+            }).then((error) => {
+
+            })
             setClockIn(props.task.task_id)
         }
 
@@ -43,7 +51,7 @@ let TaskCard = (props) => {
                     {props.task.task_title}
                 </Col>
                 <Col span={4}>
-                    <Button type="primary" >Clock-in</Button>
+                    <Button type="primary">Clock-in</Button>
                 </Col>
                 <Col span={3} justify="end">
                     {props.task.task_created}

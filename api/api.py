@@ -1,6 +1,9 @@
+from datetime import datetime
+from operator import and_
 import time
 from flask import Flask, jsonify, request, abort
-from models import db, Task, Project
+from flask_sqlalchemy import and_
+from models import db, Task, Project, TaskLogBook
 from faker import Faker
 from mdgen import MarkdownPostProvider
 
@@ -47,8 +50,13 @@ def task_clock_in():
         return jsonify(success=False)
     print('received some stuff')
     print(request.form)
-    return jsonify(success=True)
-
+    new_log_item = TaskLogBook()
+    new_log_item.task_id = request.form.get('task_id')
+    new_log_item.log_in = datetime.utcnow()
+    err = new_log_item.add_object()
+    if err:
+        return jsonify(success=False, err="There was an issue with the database")
+    return jsonify(success=True, newLogId=new_log_item.entry_id)
 
 
 @app.route('/projects')

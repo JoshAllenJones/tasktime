@@ -2,7 +2,7 @@ import {React, useState} from "react";
 import {Card, Input, Row, Col, Button} from 'antd';
 import { DownCircleOutlined } from "@ant-design/icons";
 
-import { taskListAtom } from "../atoms/taskListAtom";
+import { taskListAtom } from "../../atoms/taskListAtom";
 import axios from 'axios'
 import { useRecoilState } from 'recoil'
 
@@ -24,19 +24,18 @@ function TaskEntry() {
             return false
         }
         
-        let formData = new FormData()
-        formData.append('task_title', taskTitle)
-        axios.post('/task/post', formData).then(
-            function(response){
-                setTaskList(response.data.task_list)
-            }
+    let formData = new FormData()
+    formData.append('task_title', taskTitle)
+    axios.post('/task/post', formData).then(
+        function(response){
+            setTaskList(response.data.task_list)
+        }
         ).catch(
             function(error){
                 console.log(error)
             }
         )
-        
-        setTaskTitle('')
+    setTaskTitle('')
     }
 
 

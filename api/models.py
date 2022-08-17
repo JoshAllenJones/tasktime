@@ -34,18 +34,28 @@ class Task(db.Model, DBHelper):
     task_description = db.Column(db.Text)
     task_completed = db.Column(db.DateTime)
 
+    blocks = db.relationship("TaskBlock")
+    log_book = db.relationship("TaskLogBook")
+
     def serialize(self):
+        logbook = [item.serialize() for item in self.log_book]
+
+
         return {
             "task_id": self.task_id,
             "project_id": self.project_id,
             "task_title": self.task_title,
             "task_created": self.task_created.strftime("%B %d, %Y"),
             "task_description": self.task_description,
-            "task_completed": self.task_completed.strftime("%B %d, %Y") if self.task_completed else None
+            "task_completed": self.task_completed.strftime("%B %d, %Y") if self.task_completed else None,
+            "log_entries": logbook,
+            "latest_log": self.get_latest_log().serialize()
         }
 
-    blocks = db.relationship("TaskBlock")
-    log_book = db.relationship("TaskLogBook")
+
+    def get_latest_log(self):
+       return TaskLogBook.query.filter_by(task_id=self.task_id).order_by(TaskLogBook.log_in.desc()).first()
+        
     
 class TaskBlock(db.Model, DBHelper):
     __tablename__ = "task_block"
@@ -61,3 +71,12 @@ class TaskLogBook(db.Model, DBHelper):
     task_id = db.Column(db.Integer, db.ForeignKey("task.task_id"))
     log_in = db.Column(db.DateTime)
     log_out = db.Column(db.DateTime)
+
+    def serialize(self):
+        return {
+            "entry_id": self.entry_id,
+            "task_id": self.task_id,
+            "log_in_fmt": self.log_in.strftime("%B %d, %Y"),
+            "log_in": self.log_in,
+            "log_out": self.log_out
+        }
