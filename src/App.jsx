@@ -13,7 +13,7 @@ import ReactMarkdown from "react-markdown";
 
 import TaskCard from "./components/TaskCard/TaskCard";
 import TaskEntry from "./components/TaskEntry/TaskEntry";
-import SubBlock from "./SubBlock/SubBlock";
+import SubBlock from "./components/SubBlock/SubBlock";
 const { Header, Footer, Sider, Content } = Layout;
 
 //https://egghead.io/lessons/react-create-and-style-a-list-of-data-with-react

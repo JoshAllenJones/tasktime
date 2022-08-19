@@ -26,10 +26,9 @@ let columns = [
 
 
 let TaskCard = (props) => {
-    const [clockIn, setClockIn] = useRecoilState(clockInAtom)
+    const [task, setTask] = useState(props.task)
 
-    let taskId = props.task.task_id
-    const [logTable, setLogTable] = useState([])
+    let taskId = task.task_id
 
     let TopBar = () => {
 
@@ -41,27 +40,30 @@ let TaskCard = (props) => {
             }).then((error) => {
 
             })
-            setClockIn(props.task.task_id)
+        }
+
+        const clockOut = () => {
+
         }
 
 
         return (
             <Row justify="space-between">
                 <Col span={8}>
-                    {props.task.task_title}
+                    {task.task_title}
                 </Col>
                 <Col span={4}>
                     <Button type="primary">Clock-in</Button>
                 </Col>
                 <Col span={3} justify="end">
-                    {props.task.task_created}
+                    {task.task_created}
                 </Col>
             </Row>
         )
     }
 
     let LogTable = () => {
-        let taskLog = props.task.log_book;
+        let taskLog = task.log_entries;
         if (!taskLog){
             return <Empty />
         }
@@ -76,11 +78,10 @@ let TaskCard = (props) => {
                 }
             )
         }
-        setLogTable(tableData)
 
         if (tableData.length > 0){
             return (
-                <Table columns={columns} dataSource={logTable}  />
+                <Table columns={columns} dataSource={tableData}  />
             )
 
         } else {
@@ -92,7 +93,7 @@ let TaskCard = (props) => {
 
     
     return (
-        <Col span={24} key={props.task.task_id}>
+        <Col span={24} key={task.task_id}>
             <Card style={{margin: ".25rem", borderRadius: "1rem"}} title={<TopBar/>}>
                 <Row>
                     <Col span={24}>
@@ -103,7 +104,7 @@ let TaskCard = (props) => {
                     </Collapse>
                     </Col>
                     <Col span={24}>
-                        {props.task.description}
+                        {task.description}
                     </Col>
                     <Col>
                         

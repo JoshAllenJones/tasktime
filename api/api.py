@@ -2,7 +2,7 @@ from datetime import datetime
 from operator import and_
 import time
 from flask import Flask, jsonify, request, abort
-from flask_sqlalchemy import and_
+
 from models import db, Task, Project, TaskLogBook
 from faker import Faker
 from mdgen import MarkdownPostProvider
@@ -56,8 +56,24 @@ def task_clock_in():
     err = new_log_item.add_object()
     if err:
         return jsonify(success=False, err="There was an issue with the database")
-    return jsonify(success=True, newLogId=new_log_item.entry_id)
+    assc_task = Task.query.filter(task_id=request.form.get('task_id')).first()
+    if not assc_task:
+        return jsonify(success=False, err="Hmmmm")
+    return jsonify(success=True, task=assc_task)
 
+
+@app.route('/task/clock-out', methods=['POST'])
+def task_clock_out():
+    if not request.form:
+        return jsonify(success=False, err='Server failed to receive any data')
+    log_item = TaskLogBook.query.filter_by(entry_id=request.form.get('entry_id')).first()
+    if not log_item:
+        return jsonify(success=False, err='There was no log item associated with this task.')
+    log_item.log_out = datetime.utcnow()
+    err = log_item.update_object()
+    if err:
+        return jsonify(success=False, err=err)
+    return jsonify(success=True)
 
 @app.route('/projects')
 def get_project():

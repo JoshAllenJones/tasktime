@@ -14,6 +14,13 @@ class DBHelper():
             return False
         except Exception as e:
             return str(e)
+    
+    def update_object(self):
+        try:
+            db.session.commit()
+            return False
+        except Exception as e:
+            return str(e)
 
 
 class Project(db.Model, DBHelper):
@@ -39,7 +46,7 @@ class Task(db.Model, DBHelper):
 
     def serialize(self):
         logbook = [item.serialize() for item in self.log_book]
-
+        latest_log = self.get_latest_log().serialize() if self.get_latest_log() else None
 
         return {
             "task_id": self.task_id,
@@ -49,7 +56,7 @@ class Task(db.Model, DBHelper):
             "task_description": self.task_description,
             "task_completed": self.task_completed.strftime("%B %d, %Y") if self.task_completed else None,
             "log_entries": logbook,
-            "latest_log": self.get_latest_log().serialize()
+            "latest_log": latest_log
         }
 
 
