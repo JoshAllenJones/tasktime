@@ -56,24 +56,27 @@ def task_clock_in():
     err = new_log_item.add_object()
     if err:
         return jsonify(success=False, err="There was an issue with the database")
-    assc_task = Task.query.filter(task_id=request.form.get('task_id')).first()
+    assc_task = Task.query.filter_by(task_id=request.form.get('task_id')).first()
     if not assc_task:
         return jsonify(success=False, err="Hmmmm")
-    return jsonify(success=True, task=assc_task)
-
+    return jsonify(success=True, task=assc_task.serialize())
 
 @app.route('/task/clock-out', methods=['POST'])
 def task_clock_out():
     if not request.form:
-        return jsonify(success=False, err='Server failed to receive any data')
+        return jsonify(success=False, err="There was no data received by the server")
     log_item = TaskLogBook.query.filter_by(entry_id=request.form.get('entry_id')).first()
     if not log_item:
-        return jsonify(success=False, err='There was no log item associated with this task.')
+        return jsonify(success=False, err="This log file could not be found")
     log_item.log_out = datetime.utcnow()
     err = log_item.update_object()
     if err:
         return jsonify(success=False, err=err)
-    return jsonify(success=True)
+    task_item = Task.query.filter_by(task_id=log_item.task_id).first()
+    if not task_item:
+        return jsonify(success=False, err="Well this is a problem, the task is missing...")
+    return jsonify(success=True, task=task_item.serialize())
+
 
 @app.route('/projects')
 def get_project():
@@ -108,7 +111,7 @@ def post_task():
         if err:
             return jsonify(success=False)
         all_tasks = Task.query.all()
-        task_list = [task.task_title for task in all_tasks]
+        task_list = [task.serialize() for task in all_tasks]
         return jsonify(success=True, task_list=task_list)
     else:
         abort(403)

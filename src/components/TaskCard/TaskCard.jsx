@@ -25,9 +25,11 @@ let columns = [
 ]
 
 
+
+
 let TaskCard = (props) => {
     const [task, setTask] = useState(props.task)
-
+    const [tableData, setTableData] = useState(props.task.log_entries)
     let taskId = task.task_id
 
     let TopBar = () => {
@@ -37,13 +39,35 @@ let TaskCard = (props) => {
             formData.append('task_id', taskId)
             axios.post('/task/clock-in', formData).then((response) => {
                 console.log(response)
+                setTask(response.data.task)
+            }).then((error) => {
+                console.log(error)
+            })
+        }
+
+
+
+        const clockOut = (event, entryId) => {
+            let formData = new FormData()
+            formData.append('entry_id', entryId)
+            axios.post('/task/clock-out', formData).then((response) => {
+                console.log(response)
             }).then((error) => {
 
             })
         }
 
-        const clockOut = () => {
+        const ClockButton = () => {
+            if (task.latest_log){
+                return(
+                    <Button onClick={event => clockOut(event, task.latest_log.entry_id)}>Clock Out</Button>
+                )
+            } else {
+                return (
+                    <Button onClick={clockIn}>Clock In</Button>
 
+                )
+            }
         }
 
 
@@ -53,7 +77,7 @@ let TaskCard = (props) => {
                     {task.task_title}
                 </Col>
                 <Col span={4}>
-                    <Button type="primary">Clock-in</Button>
+                    <ClockButton />
                 </Col>
                 <Col span={3} justify="end">
                     {task.task_created}

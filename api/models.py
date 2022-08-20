@@ -61,8 +61,11 @@ class Task(db.Model, DBHelper):
 
 
     def get_latest_log(self):
-       return TaskLogBook.query.filter_by(task_id=self.task_id).order_by(TaskLogBook.log_in.desc()).first()
-        
+        log_item = TaskLogBook.query.filter_by(task_id=self.task_id).order_by(TaskLogBook.log_in.desc()).first()
+        if log_item:
+            return log_item
+        else:
+            return None
     
 class TaskBlock(db.Model, DBHelper):
     __tablename__ = "task_block"
@@ -85,5 +88,11 @@ class TaskLogBook(db.Model, DBHelper):
             "task_id": self.task_id,
             "log_in_fmt": self.log_in.strftime("%B %d, %Y"),
             "log_in": self.log_in,
-            "log_out": self.log_out
+            "log_out": self.log_out,
+        }
+
+    def table_serialize(self):
+        return {
+            "key": self.entry_id,
+            
         }

@@ -24,18 +24,18 @@ function TaskEntry() {
             return false
         }
         
-    let formData = new FormData()
-    formData.append('task_title', taskTitle)
-    axios.post('/task/post', formData).then(
-        function(response){
-            setTaskList(response.data.task_list)
-        }
-        ).catch(
-            function(error){
-                console.log(error)
+        let formData = new FormData()
+        formData.append('task_title', taskTitle)
+        axios.post('/task/post', formData).then(
+            function(response){
+                setTaskList(response.data.task_list)
             }
-        )
-    setTaskTitle('')
+            ).catch(
+                function(error){
+                    console.log(error)
+                }
+            )
+        setTaskTitle('')
     }
 
 
