@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {RecoilRoot} from 'recoil';
+import { MantineProvider } from '@mantine/core';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import 'antd/dist/antd.css'
+import './css/main.css'
 
 ReactDOM.render(
     <React.StrictMode>
       <RecoilRoot>
+        <MantineProvider theme={{
+                    fontFamily: "iA Writer QuattroS"
+                    }}>
           <App />
+        </MantineProvider>
       </RecoilRoot>
     </React.StrictMode>,
   document.getElementById('root')
