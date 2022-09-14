@@ -1,5 +1,11 @@
-import { Card, TextInput, createStyles } from "@mantine/core";
+import { Card, TextInput, createStyles, Text, Textarea } from "@mantine/core";
 import { useState } from "react";
+import { useRecoilState } from "recoil";
+import axios from "axios";
+
+import MainBlock from "../MainBlock/MainBlock";
+import { taskListAtom } from "../../atoms/taskListAtom";
+
 
 const useStylesTopInput = createStyles((theme) => ({
     input: {
@@ -13,13 +19,29 @@ const useStylesTopInput = createStyles((theme) => ({
 
 const MainSheet = (props) => {
 
+    const [taskList, setTaskList] = useRecoilState(taskListAtom)
+    const [taskText, setTaskText] = useState(null)
+
     const { classes } = useStylesTopInput()
 
+    function submitTask(event) {
+        if (event.key == "Enter") {
+            event.preventDefault()
+            let formData = new FormData()
+            formData.append("task_content", taskText)
+            axios.post()
+            console.log('BEEPPPPP')
+        }
+    }
 
     return (
-        <Card sx={{height: "90vh"}} shadow="sm" radius="md" >
-            <TextInput classNames={{ input: classes.input}} size="xl" />
-            <TextInput size="md" styles={{input: { paddingLeft: 0, border: "none"}}} /> 
+        <Card sx={{height: "95vh"}} shadow="lg" radius="md" >
+            <Text size="xl">{props.sheetTitle}</Text>
+            <Textarea variant="unstyled" onKeyPress={submitTask} onChange={(event)=>setTaskText(event.target.value)} size="md" placeholder="add task here..." />
+            {taskList.map((item)=> {
+                <MainBlock {...item} />
+                
+            })}
         </Card>
 
     )

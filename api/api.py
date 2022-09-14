@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import datetime, date
 from operator import and_
 import time
 from flask import Flask, jsonify, request, abort
+from sqlalchemy.orm import load_only
 
-from models import db, Task, Project, TaskLogBook
+
+from models import db, Task, Project, TaskLogBook, DailyNote
 from faker import Faker
 from mdgen import MarkdownPostProvider
 
@@ -27,6 +29,32 @@ def create_database():
     db.create_all()
     return 'wow grape'
 
+@app.route('/init')
+def init_workspace():
+    projects = Project.query.options(load_only(Project.project_id, Project.project_title )).all()
+    print(projects)
+    daily_note = DailyNote.query.filter(DailyNote.day == date.today()).first()
+    if not daily_note:
+        daily_note = DailyNote()
+        daily_note.day = date.today()
+        db.session.add(daily_note)
+        db.session.commit()
+    daily_note_info = {
+        "daily_id": daily_note.daily_id,
+        "date": daily_note.day.strftime("%a %d, %Y"),
+    }
+    init_obj = {
+        "daily_note": daily_note_info,
+        "projects": [],
+    }
+    for project in projects:
+        init_obj['projects'].append({
+            "project_name": project.project_title,
+            "project_id": project.project_id
+        })
+    tasks = Task.query.filter_by(daily_id=daily_note.daily_id).all()
+    print(init_obj)
+    return jsonify(init_obj=init_obj)
 
 @app.route('/tasks/test')
 def get_test_tasks():
@@ -107,10 +135,11 @@ def post_task():
     if request.form:
         new_task = Task()
         new_task.task_title = request.form.get('task_title')
+        new_task.daily_id = request.form.get('daily_id')
         err = new_task.add_object()
         if err:
             return jsonify(success=False)
-        all_tasks = Task.query.all()
+        all_tasks = Task.query.filter_by(daily_id=new_task.daily_id).all()
         task_list = [task.serialize() for task in all_tasks]
         return jsonify(success=True, task_list=task_list)
     else:

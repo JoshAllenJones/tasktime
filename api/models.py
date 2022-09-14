@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -23,6 +23,16 @@ class DBHelper():
             return str(e)
 
 
+class DailyNote(db.Model, DBHelper):
+    __tablename__ = "daily"
+    daily_id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    day = db.Column(db.Date, default=date.today)
+
+
+    tasks = db.relationship('Task')
+
+
 class Project(db.Model, DBHelper):
     __tablename__ = "project"
     project_id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +46,7 @@ class Task(db.Model, DBHelper):
     __tablename__ = "task"
     task_id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.project_id'))
+    daily_id = db.Column(db.Integer, db.ForeignKey('daily.daily_id'))
     task_title = db.Column(db.Text)
     task_created = db.Column(db.DateTime, default=datetime.utcnow)
     task_description = db.Column(db.Text)
@@ -59,6 +70,13 @@ class Task(db.Model, DBHelper):
             "latest_log": latest_log
         }
 
+
+    def has_open_log(self):
+        incomplete_entries = TaskLogBook.query.filter_by(task_id=self.task_id, log_out=None).first()
+        if incomplete_entries:
+            return incomplete_entries
+        else:
+            return False
 
     def get_latest_log(self):
         log_item = TaskLogBook.query.filter_by(task_id=self.task_id).order_by(TaskLogBook.log_in.desc()).first()
