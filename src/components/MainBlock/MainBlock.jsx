@@ -7,7 +7,8 @@ import { currentlyViewingAtom } from '../../atoms/currentlyViewingAtom'
 
 
 const MainBlock = (props) => {
-	const taskId = props.taskId
+	const taskObj = props.taskObj
+	const taskId = taskObj.task_id
 
 	const [taskTitle, setTaskTitle] = useState(null)
 	const [viewing, setViewing] = useRecoilState(currentlyViewingAtom)
@@ -40,7 +41,7 @@ const MainBlock = (props) => {
 			<Textarea
 			variant="unstyled"
 			autosize
-			withAsterisk onKeyPress={keyUpHandler}  onChange={handleInput} />
+			withAsterisk onKeyPress={keyUpHandler} value={taskObj.task_title}  onChange={handleInput} />
 
 			</Grid.Col>
 			<Grid.Col span={2}>

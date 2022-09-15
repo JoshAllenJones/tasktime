@@ -56,6 +56,13 @@ def init_workspace():
     print(init_obj)
     return jsonify(init_obj=init_obj)
 
+
+@app.route('/tasks/today')
+def get_tasks():
+    tasks = Task.query.all()
+    return jsonify(tasks=[task.serialize() for task in tasks])
+
+
 @app.route('/tasks/test')
 def get_test_tasks():
     task_list = []
@@ -133,8 +140,9 @@ def post_task():
     print(request.form)
     print('being hit')
     if request.form:
+        print(request.form)
         new_task = Task()
-        new_task.task_title = request.form.get('task_title')
+        new_task.task_title = request.form.get('task_content')
         new_task.daily_id = request.form.get('daily_id')
         err = new_task.add_object()
         if err:

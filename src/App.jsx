@@ -19,16 +19,16 @@ const App = () => {
 
   const [projectList, setProjectList] = useRecoilState(projectListAtom)
   const [dailyNote, setDailyNote] = useRecoilState(dailyNoteAtom)
-  const [taskList, setTaskList] = useRecoilState(taskListAtom)
   
 
   useEffect(() => {
     axios.get('/init').then((resp) => {
       console.log('WHAT IS THIS OBJECT')
-      console.log(resp.data.init_obj.projects)
+      
       setProjectList((current) => [current, ...resp.data.init_obj.projects])
       setDailyNote(({...resp.data.init_obj.daily_note}))
-      setTaskList((current) => [current, ...resp.data.init_obj.tasks])
+      console.log('DAILY NOTE')
+      console.log(dailyNote)
     })
   }, [setProjectList])
 
