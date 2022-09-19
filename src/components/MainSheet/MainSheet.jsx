@@ -24,11 +24,11 @@ const MainSheet = (props) => {
     const dailyNote = useRecoilValue(dailyNoteAtom)
 
     useEffect(() => {
-        axios.get('/tasks/today')
+        axios.get('/blocks/today')
         .then((resp) => {
             console.log('GETTING TODAYS TASKS')
-            console.log(resp.data.tasks)
-            setTaskList(resp.data.tasks)
+            console.log(resp.data.blocks)
+            setTaskList(resp.data.blocks)
             console.log('TASK LIST STATE')
             console.log(taskList)
         }).catch((error)=>{
@@ -38,7 +38,7 @@ const MainSheet = (props) => {
 
     const [taskText, setTaskText] = useState(null)
 
-    const blocks = taskList.map((item, i) => <MainBlock key={item.task_id} taskObj={item}/>)
+    const blocks = taskList.map((item, i) => <MainBlock key={item.block_id} taskObj={item}/>)
 
     const { classes } = useStylesTopInput()
 
@@ -46,11 +46,11 @@ const MainSheet = (props) => {
         if (event.key == "Enter") {
             event.preventDefault()
             let formData = new FormData()
-            formData.append("task_content", taskText)
+            formData.append("block_title", taskText)
             formData.append('daily_id', dailyNote.daily_id)
-            axios.post('/task/post', formData)
+            axios.post('/block/post', formData)
             .then((resp) => {
-                console.log(resp)
+                setTaskList((current) => [...current, resp.data.new_block])
             }).catch(error => alert(error))
             console.log('BEEPPPPP')
         }

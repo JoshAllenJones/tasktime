@@ -1,10 +1,12 @@
 import { useState, useEffect  } from "react";
-import { Navbar, Grid, NavLink, Card } from "@mantine/core";
+import { Navbar, Grid, NavLink, Card, Transition } from "@mantine/core";
 
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { projectListAtom } from "./atoms/projectListAtom";
 import { dailyNoteAtom } from "./atoms/dailyNoteAtom";
 import { taskListAtom } from "./atoms/taskListAtom";
+import { currentlyViewingAtom } from "./atoms/currentlyViewingAtom";
+import './components/SideSheet/sidesheet.css'
 
 import MainSheet from "./components/MainSheet/MainSheet";
 import SideSheet from "./components/SideSheet/SideSheet";
@@ -19,6 +21,7 @@ const App = () => {
 
   const [projectList, setProjectList] = useRecoilState(projectListAtom)
   const [dailyNote, setDailyNote] = useRecoilState(dailyNoteAtom)
+  const currentlyViewing = useRecoilValue(currentlyViewingAtom)
   
 
   useEffect(() => {
@@ -35,7 +38,18 @@ const App = () => {
 
   const LinkList = () => projectList.map((item, i) => <NavLink key={item.project_id} label={item.project_name} />)
 
-
+  function SidePanel(){
+    if (Object.keys(currentlyViewing).length > 0){
+      return (
+        <Grid.Col span={6} className="slide-in-right">
+          <SideSheet taskObj={currentlyViewing} />
+        </Grid.Col>
+      )
+    } else {
+      return null
+    }
+  }
+  
   
 
   return (
@@ -52,9 +66,7 @@ const App = () => {
           <Grid.Col span={6}>
             <MainSheet sheetTitle={dailyNote.date} />
           </Grid.Col>          
-          <Grid.Col span={6}>
-            <SideSheet />
-          </Grid.Col>
+          <SidePanel />
         </Grid>
       </Grid.Col>
     </Grid>

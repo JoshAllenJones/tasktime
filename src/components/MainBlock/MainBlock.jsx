@@ -1,17 +1,20 @@
 import {TextInput, Group, Textarea, Grid, Butto, ActionIcon} from '@mantine/core'
 import { ArrowRightIcon } from '@radix-ui/react-icons'
+import axios from 'axios'
 import { useState } from 'react'
 
 import { useRecoilState } from 'recoil'
 import { currentlyViewingAtom } from '../../atoms/currentlyViewingAtom'
+import { subBlocksAtom } from '../../atoms/subBlocksAtom'
 
 
 const MainBlock = (props) => {
-	const taskObj = props.taskObj
-	const taskId = taskObj.task_id
+	const blockObj = props.taskObj
+	const blockId = blockObj.block_id
 
 	const [taskTitle, setTaskTitle] = useState(null)
 	const [viewing, setViewing] = useRecoilState(currentlyViewingAtom)
+	const [subBlocks, setSubBlocks] = useRecoilState(subBlocksAtom)
 
     const keyUpHandler = (event) => {
         if (event.charCode == 13){
@@ -25,7 +28,16 @@ const MainBlock = (props) => {
 	}
 
 	const viewTask = (event) => {
-		setViewing(taskId)
+		axios.get(`/blocks/${blockId}`)
+		.then((resp) => {
+			console.log(resp.data)
+			setViewing(({...resp.data}))
+			setSubBlocks([...resp.data.sub_blocks])
+			console.log("SUB BLOCKS")
+			console.log(subBlocks)
+		}).catch((error) => {
+			alert(error)
+		})
 
 	}
 
@@ -41,7 +53,7 @@ const MainBlock = (props) => {
 			<Textarea
 			variant="unstyled"
 			autosize
-			withAsterisk onKeyPress={keyUpHandler} value={taskObj.task_title}  onChange={handleInput} />
+			withAsterisk onKeyPress={keyUpHandler} value={blockObj.block_title}  onChange={handleInput} />
 
 			</Grid.Col>
 			<Grid.Col span={2}>
