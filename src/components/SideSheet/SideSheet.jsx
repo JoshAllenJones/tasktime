@@ -48,7 +48,7 @@ const SideSheet = (props) => {
             <Grid>
                 <Grid.Col span={12}>
                     <Group position="apart">
-                        <Text size="xl">{taskObj.task_title}</Text>
+                        <Text size="xl">{taskObj.block_title}</Text>
                         <Button variant="gradient" gradient={{ from: 'indigo', to: 'cyan' }}>Clock In</Button>
                     </Group>
 

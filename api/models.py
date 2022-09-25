@@ -96,7 +96,7 @@ class SubBlock(db.Model, DBHelper):
     def serialize(self):
         return {
             "sub_block_id": self.sub_block_id,
-            "created": self.created.strftime("%b %-d, %Y @ %-I:%M"),
+            "created": self.created,
             "parent_task": self.parent_block,
             "block_content": self.block_content
 

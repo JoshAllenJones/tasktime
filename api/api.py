@@ -3,6 +3,7 @@ from operator import and_
 import re
 import time
 from flask import Flask, jsonify, request, abort
+from flask_migrate import Migrate
 from sqlalchemy.orm import load_only
 
 
@@ -22,6 +23,8 @@ DB_NAME = "tasktime"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{0}:{1}@{2}:{3}/{4}'.format(DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME)
 
 db.init_app(app)
+
+migrate = (Migrate(app, db))
 
 
 @app.route('/db/create')
